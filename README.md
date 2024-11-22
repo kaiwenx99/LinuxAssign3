@@ -99,6 +99,73 @@ sudo journalctl -u generate_index.service
 > The output should look like:
 > ![Service Log](/images/service_log.png)
 
-### Task 3: configure Nginx
+### Task 3: configure Nginx and index.html
+
+1. To modify nginx.conf, run:
+
+```
+sudo nvim /etc/nginx/nginx.conf
+```
+
+2. Inside the script, change the user to:
+
+```
+user webgen;
+```
+
+The result should look like:
+![User Webgen](/images/user_webgen.png)
+
+4. To create a separate server block file, create the following directories first:
+
+```
+mkdir /etc/nginx/sites-available
+mkdir /etc/nginx/sites-enabled
+```
+
+5. Then to include it in nginx.conf, use `nvim` into this file like step 1, then include the following inside `http` block:
+
+```
+http {
+    ...
+    include /etc/nginx/sites-enabled/*;
+}
+```
+
+6. To create and edit a separate server block file, run:
+
+```
+sudo nvim /etc/nginx/sites-available/webgen
+```
+
+7. Add the following script to block file:
+
+```
+server {
+    listen 80;
+    listen [::]:80;
+
+    server_name localhost;
+
+    root /var/lib/webgen/HTML;
+    index index.html;
+
+        location / {
+        try_files $uri $uri/ =404;
+    }
+}
+```
+
+8. The two scripts above should look like:
+
+- nginx.conf:
+
+- webgen block:
+
+9. To enable the server block, create symlink:
+
+```
+sudo ln -s /etc/nginx/sites-available/webgen /etc/nginx/sites-enabled/webgen
+```
 
 ## Part 2
