@@ -123,6 +123,8 @@ mkdir /etc/nginx/sites-available
 mkdir /etc/nginx/sites-enabled
 ```
 
+> This approach makes it easier to manage configurations, without implementing on the nginx.conf directly.
+
 5. Then to include it in nginx.conf, use `nvim` into this file like step 1, then include the following inside `http` block:
 
 ```
@@ -159,13 +161,105 @@ server {
 8. The two scripts above should look like:
 
 - nginx.conf:
+  ![Nginx Conf](/images/nginx_conf.png)
 
 - webgen block:
+  ![Server Block](/images/server_block.png)
 
 9. To enable the server block, create symlink:
 
 ```
 sudo ln -s /etc/nginx/sites-available/webgen /etc/nginx/sites-enabled/webgen
 ```
+
+10. To start nginx service and verify status, run:
+
+```
+sudo systemctl start nginx
+sudo systemctl status nginx
+```
+
+> If the service fail at start, run `sudo nginx -t` to check syntax error
+
+11. To ensure Nginx can access index.html while running as `webgen` user, set necessary permissions:
+
+```
+sudo chown -R webgen:webgen /var/lib/webgen
+sudo chmod -R 755 /var/lib/webgen
+```
+
+12. To test the config result on web browser, connect to server ip address:
+
+```
+http://143.198.98.101/
+```
+
+The browser should look like:
+![index.html](/images/html.png)
+
+### Task 4: set up firewall
+
+1. To install ufw, run:
+
+```
+sudo pacman -Syu ufw
+```
+
+2. Make sure ssh connection is allowed before enable ufw, run:
+
+```
+ sudo ufw allow 22
+```
+
+3. Then enable ufw, run:
+
+```
+sudo ufw enable
+```
+
+Now ufw is active and enabled on system startup.
+
+4. Start ufw service, run:
+
+```
+sudo systemctl start ufw
+```
+
+5. To allow HTTP at port 80, run:
+
+```
+sudo ufw allow 80
+```
+
+6. To allow HTTPS at port 443, run:
+
+```
+sudo ufw allow 443
+```
+
+7. To enable limit on SSH to prevent brute-force attack, run:
+
+```
+sudo ufw limit 22
+```
+
+8. To apply all the changes above, run:
+
+```
+sudo ufw enable
+```
+
+9. To verify the changes and check the status of ufw, run:
+
+```
+sudo ufw status verbose
+```
+
+The output should look like:
+![Ufw Output](/images/ufw.png)
+
+### Task 5: system information page
+
+![Final Output](/images/final_output.png)
 
 ## Part 2
