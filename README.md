@@ -10,47 +10,47 @@
 sudo useradd -r -d /var/lib/webgen -s /usr/sbin/nologin webgen
 ```
 
+> From useradd manual: `-r`creates a system account, `-d` specifies user's home directory, `-s` sets the user login shell.
+
 2. Create bin and HTML directories along with their parent directory, run:
 
 ```
 sudo mkdir -p /var/lib/webgen/bin /var/lib/webgen/HTML
 ```
 
-3. Change the ownership of /var/lib/webgen/ to webgen user within webgen group, run:
-
-```
-sudo chown -R webgen:webgen /var/lib/webgen
-```
-
-4. Create the specified files, run:
+3. Create the specified files, run:
 
 ```
 sudo touch /var/lib/webgen/bin/generate_index /var/lib/webgen/HTML/index.html
 ```
 
-5. Change the ownership of these 2 files to webgen user within webgen group, run:
+4. Change the ownership of these 2 files to webgen user within webgen group, run:
 
 ```
 sudo chown -R webgen:webgen /var/lib/webgen
 ```
 
+> `-R` recursive makes sure this ownership change applies to the not only this directory but also all of its sub directories and files.
+
+By creating a system user and let it perform specific webgen tasks, other users won't be able to access it. This approach keeps the system safety comparing to perfrom as a regular user or root user.
+
 ### Task 2: create service and timer unit files
 
-1. To create generate_index.service file in system directory, run to create and edit:
+1. Create generate_index.service file in system directory, run the following to create and edit:
 
 ```
 sudo vim /etc/systemd/system/generate_index.service
 ```
 
-> Script is in generate_index.service.
+> See generate_index.service for more details.
 
-2. To create generate_index.timer file in system directory, run to create and edit:
+2. Create generate_index.timer file in system directory, run to create and edit:
 
 ```
 sudo vim /etc/systemd/system/generate_index.timer
 ```
 
-> Script is in generate_index.timer.
+> See generate_index.timer for more details.
 
 3. After creating the two unit files above, to reload the systemd daemon to recognize the new unit files, run:
 
@@ -123,9 +123,9 @@ mkdir /etc/nginx/sites-available
 mkdir /etc/nginx/sites-enabled
 ```
 
-> This approach makes it easier to manage configurations, without implementing on the nginx.conf directly.
+> Separated block approach makes it easier to manage configurations, without implementing on the nginx.conf directly.
 
-5. Then to include it in nginx.conf, use `nvim` into this file like step 1, then include the following inside `http` block:
+5. Then to include it in nginx.conf, use `nvim` into this file like step 1, then include the following line inside `http` block:
 
 ```
 http {
@@ -140,7 +140,7 @@ http {
 sudo nvim /etc/nginx/sites-available/webgen
 ```
 
-7. Add the following script to block file:
+7. Add the following script to the block file webgen:
 
 ```
 server {
@@ -157,6 +157,8 @@ server {
     }
 }
 ```
+
+> See server_block for more details.
 
 8. The two scripts above should look like:
 
@@ -180,8 +182,10 @@ sudo systemctl status nginx
 ```
 
 > If the service fail at start, run `sudo nginx -t` to check syntax error
+> The status command output should look like:
+> ![Nginx Status](/images/nginx_status.png)
 
-11. To ensure Nginx can access index.html while running as `webgen` user, set necessary permissions:
+11. To ensure nginx can access index.html while running as `webgen` user, set necessary permissions:
 
 ```
 sudo chown -R webgen:webgen /var/lib/webgen
@@ -261,5 +265,7 @@ The output should look like:
 ### Task 5: system information page
 
 ![Final Output](/images/final_output.png)
+
+### General
 
 ## Part 2
