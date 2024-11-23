@@ -203,7 +203,7 @@ The browser should look like:
 
 ### Task 4: set up firewall
 
-1. To install ufw, run:
+1. Install ufw package, run:
 
 ```
 sudo pacman -Syu ufw
@@ -215,13 +215,13 @@ sudo pacman -Syu ufw
  sudo ufw allow 22
 ```
 
-3. Then enable ufw, run:
+3. Enable ufw, run:
 
 ```
 sudo ufw enable
 ```
 
-Now ufw is active and enabled on system startup.
+> Now ufw is active and enabled on system startup.
 
 4. Start ufw service, run:
 
@@ -235,25 +235,19 @@ sudo systemctl start ufw
 sudo ufw allow 80
 ```
 
-6. To allow HTTPS at port 443, run:
-
-```
-sudo ufw allow 443
-```
-
-7. To enable limit on SSH to prevent brute-force attack, run:
+6. To enable limit on SSH to prevent brute-force attack, run:
 
 ```
 sudo ufw limit 22
 ```
 
-8. To apply all the changes above, run:
+7. To apply all the changes above, run:
 
 ```
 sudo ufw enable
 ```
 
-9. To verify the changes and check the status of ufw, run:
+8. To verify the changes and check the status of ufw, run:
 
 ```
 sudo ufw status verbose
@@ -267,5 +261,20 @@ The output should look like:
 ![Final Output](/images/final_output.png)
 
 ### General
+
+To comlete the generate_index script, I wouldl like to add a help option to demonstrate the usage of this script, position at the beginning:
+
+```
+#!/bin/bash
+
+# Check for help '-h' option
+if [[ "$@" == -h ]]; then
+    echo "Usage: $0"
+    echo "Function: generate an HTML file with system information."
+    exit 0
+fi
+
+...
+```
 
 ## Part 2
